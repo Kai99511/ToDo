@@ -2,8 +2,9 @@ const form = document.getElementById("form");
 const input = document.getElementById("input");
 const ul = document.getElementById("ul");
 
-const todos = JSON.parse(localStorage.getItem("todos"));
+const todos = JSON.parse(localStorage.getItem("todos"));//localStorage.getItem("キー")データの取得
 
+//todosが(true)空じゃなかったらliタグを追加する
 if (todos) {
     todos.forEach(todo => {
         add(todo);
@@ -16,7 +17,7 @@ form.addEventListener("submit", function (event) {
 })
 
 //入力された値をリストに追加
-function add(todo) {
+function add(todo) {    //todo引数を受け取る
     let todoText = input.value;//valueフォームの値を取り出す
 
     if (todo) {
@@ -33,15 +34,15 @@ function add(todo) {
             li.classList.add("text-decoration-line-through")
         }
         //右クリックで削除
-        li.addEventListener("contextmenu", function (event) {
-            event.preventDefault();
+        li.addEventListener("contextmenu", function (event) {   //contextmenu"右クリック"
+            event.preventDefault(); //右クリックのデフォルト機能をオフ
             li.remove();
             saveData();
         });
         //左クリックで取り消し線をつける
         li.addEventListener("click", function () {
             li.classList.toggle//toggleなければつける。あれば消す
-                ("text-decoration-line-through")
+                ("text-decoration-line-through");
             saveData();
         });
         ul.appendChild(li);//ulタグの子供としてタグ追加できる
@@ -70,6 +71,8 @@ function saveData() {
         };
         todos.push(todo);
     });
-    //ローカルストレージへの保存
+    //localStorage.setItem("キー","値")　ローカルストレージへの保存
+    //JSON.stringify JSON:JavaScriptのオブジェクトの書き方を元にしたデータ定義方法
+    //ローカルへの保存ができる　検証＞アプリケーション＞ローカルストレージ
     localStorage.setItem("todos", JSON.stringify(todos));
 }
