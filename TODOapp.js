@@ -8,7 +8,6 @@ if (todos) {
     todos.forEach(todo => {
         add(todo);
     })
-
 }
 
 form.addEventListener("submit", function (event) {
@@ -46,7 +45,7 @@ function add(todo) {
             saveData();
         });
 
-        ul.appendChild(li);//ulタグの子供としてタグ追加できる
+        Ul.appendChild(li);//ulタグの子供としてタグ追加できる
         input.value = "";//入力フォームを空にする
         saveData();
     }
