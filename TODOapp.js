@@ -41,8 +41,7 @@ function add(todo) {    //todo引数を受け取る
         });
         //左クリックで取り消し線をつける
         li.addEventListener("click", function () {
-            li.classList.toggle//toggleなければつける。あれば消す
-                ("text-decoration-line-through");
+            li.classList.toggle("text-decoration-line-through");//toggleなければつける。あれば消す
             saveData();
         });
         ul.appendChild(li);//ulタグの子供としてタグ追加できる
@@ -50,6 +49,7 @@ function add(todo) {    //todo引数を受け取る
         saveData();
     }
 }
+
 
 //TODOの記録
 function saveData() {
