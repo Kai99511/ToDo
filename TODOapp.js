@@ -8,13 +8,13 @@ const todos = JSON.parse(localStorage.getItem("todos"));//localStorage.getItem("
 if (todos) {
     todos.forEach(todo => {
         add(todo);
-    })
+    });
 }
 
 form.addEventListener("submit", function (event) {
     event.preventDefault(); //フォームをサブミットしたときのリロードをしないようにする
     add();//呼び出し元
-})
+});
 
 //入力された値をリストに追加
 function add(todo) {    //todo引数を受け取る
@@ -24,32 +24,41 @@ function add(todo) {    //todo引数を受け取る
         todoText = todo.text;
     }
 
-    if (todoText.length > 0) //0文字以上の値が入力された場合true (length>0)はなくても良い。暗黙的型変換
-    {
+    if (todoText.length > 0) { //0文字以上の値が入力された場合true (length>0)はなくても良い。暗黙的型変換
         const li = document.createElement("li");
+
         li.innerText = todoText;
         li.classList.add("list-group-item");
 
         if (todo && todo.completed) {
             li.classList.add("text-decoration-line-through")
         }
-        //右クリックで削除
-        li.addEventListener("contextmenu", function (event) {   //contextmenu"右クリック"
-            event.preventDefault(); //右クリックのデフォルト機能をオフ
-            li.remove();
-            saveData();
+
+        // 削除ボタンを生成
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = '削除';
+        deleteButton.classList.add('btn', 'btn-danger','ms-2',); // Bootstrapのスタイルを追加
+
+        // 削除ボタンをクリックしたときの処理
+        deleteButton.addEventListener('click', function (event) {
+            event.stopPropagation(); // クリックイベントが親要素に伝播しないようにする
+            deleteTask(li);
         });
-        //左クリックで取り消し線をつける
-        li.addEventListener("click", function () {
-            li.classList.toggle("text-decoration-line-through");//toggleなければつける。あれば消す
-            saveData();
-        });
+
+        // リストアイテムに削除ボタンを追加
+        li.appendChild(deleteButton);
+       
         ul.appendChild(li);//ulタグの子供としてタグ追加できる
         input.value = "";//入力フォームを空にする
         saveData();
     }
 }
 
+// タスクを削除する関数
+function deleteTask(task) {
+    ul.removeChild(task);
+    saveData();
+}
 
 
 //TODOの記録
@@ -78,35 +87,4 @@ function saveData() {
     localStorage.setItem("todos", JSON.stringify(todos));
 }
 
-// タッチイベントのリスナーを追加
-ul.addEventListener("touchstart", handleTouchStart, { passive: false });
-ul.addEventListener("touchend", handleTouchEnd, { passive: false });
 
-let longPressTimer;
-
-function handleTouchStart(event) {
-    startX = event.touches[0].clientX;
-    startY = event.touches[0].clientY;
-
-    // 長押しを開始するまでの時間を設定
-    longPressTimer = setTimeout(() => {
-        const clicked = event.target;
-        if (clicked.tagName === "LI") {
-            deleteTask(clicked);
-        }
-    }, 500); // 500ミリ秒（0.5秒）で長押しとみなす時間
-}
-
-function handleTouchEnd() {
-    // 長押しのタイマーをクリア
-    clearTimeout(longPressTimer);
-
-    // フリックの終了後、初期値をリセット
-    startX = 0;
-    startY = 0;
-}
-
-function deleteTask(taskElement) {
-    taskElement.remove();
-    saveData();
-}
