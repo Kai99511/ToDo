@@ -4,11 +4,6 @@ const ul = document.getElementById("ul");
 
 const todos = JSON.parse(localStorage.getItem("todos"));//localStorage.getItem("キー")データの取得
 
-//フリック用
-const flickThreshold = 100;
-let startX = 0;
-let startY = 0;
-
 //todosが(true)空じゃなかったらliタグを追加する
 if (todos) {
     todos.forEach(todo => {
@@ -55,6 +50,36 @@ function add(todo) {    //todo引数を受け取る
     }
 }
 
+
+
+//TODOの記録
+function saveData() {
+    const lists = document.querySelectorAll("li");//liタグをすべて取ってくる
+    let todos = [];//配列
+
+    //例:forEach
+    //const array = [1,2,3]
+    //array.forEach(value=>{
+    //console.log(value * 2);
+    //});2.4.6
+
+    lists.forEach(list => {
+        //オブジェクト
+        let todo = {
+            text: list.innerText,
+            completed: list.classList.contains
+                ("text-decoration-line-through")
+        };
+        todos.push(todo);
+    });
+    //localStorage.setItem("キー","値")　ローカルストレージへの保存
+    //JSON.stringify JSON:JavaScriptのオブジェクトの書き方を元にしたデータ定義方法
+    //ローカルへの保存ができる　検証＞アプリケーション＞ローカルストレージ
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+// ... 既存のコード ...
+
 ul.addEventListener("touchstart", handleTouchStart, { passive: false });
 ul.addEventListener("touchmove", handleTouchMove, { passive: false });
 
@@ -83,28 +108,7 @@ function handleTouchMove(event) {
     }
 }
 
-//TODOの記録
-function saveData() {
-    const lists = document.querySelectorAll("li");//liタグをすべて取ってくる
-    let todos = [];//配列
-
-    //例:forEach
-    //const array = [1,2,3]
-    //array.forEach(value=>{
-    //console.log(value * 2);
-    //});2.4.6
-
-    lists.forEach(list => {
-        //オブジェクト
-        let todo = {
-            text: list.innerText,
-            completed: list.classList.contains
-                ("text-decoration-line-through")
-        };
-        todos.push(todo);
-    });
-    //localStorage.setItem("キー","値")　ローカルストレージへの保存
-    //JSON.stringify JSON:JavaScriptのオブジェクトの書き方を元にしたデータ定義方法
-    //ローカルへの保存ができる　検証＞アプリケーション＞ローカルストレージ
-    localStorage.setItem("todos", JSON.stringify(todos));
+function deleteTask(taskElement) {
+    taskElement.remove();
+    saveData();
 }
