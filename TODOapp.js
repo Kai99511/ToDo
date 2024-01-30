@@ -4,6 +4,11 @@ const ul = document.getElementById("ul");
 
 const todos = JSON.parse(localStorage.getItem("todos"));//localStorage.getItem("キー")データの取得
 
+//フリック用
+const flickThreshold = 100;
+let startX = 0;
+let startY = 0;
+
 //todosが(true)空じゃなかったらliタグを追加する
 if (todos) {
     todos.forEach(todo => {
@@ -50,6 +55,33 @@ function add(todo) {    //todo引数を受け取る
     }
 }
 
+ul.addEventListener("touchstart", handleTouchStart, { passive: false });
+ul.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+function handleTouchStart(event) {
+    startX = event.touches[0].clientX;
+    startY = event.touches[0].clientY;
+}
+
+function handleTouchMove(event) {
+    const currentX = event.touches[0].clientX;
+    const currentY = event.touches[0].clientY;
+
+    const deltaX = currentX - startX;
+    const deltaY = currentY - startY;
+
+    if (Math.abs(deltaX) > flickThreshold && Math.abs(deltaY) < 30) {
+        // フリックされたと判断
+        const clicked = event.target;
+        if (clicked.tagName === "LI") {
+            deleteTask(clicked);
+        }
+
+        // フリックの終了後、初期値をリセット
+        startX = 0;
+        startY = 0;
+    }
+}
 
 //TODOの記録
 function saveData() {
