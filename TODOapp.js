@@ -78,34 +78,32 @@ function saveData() {
     localStorage.setItem("todos", JSON.stringify(todos));
 }
 
-// ... 既存のコード ...
-
+// タッチイベントのリスナーを追加
 ul.addEventListener("touchstart", handleTouchStart, { passive: false });
-ul.addEventListener("touchmove", handleTouchMove, { passive: false });
+ul.addEventListener("touchend", handleTouchEnd, { passive: false });
+
+let longPressTimer;
 
 function handleTouchStart(event) {
     startX = event.touches[0].clientX;
     startY = event.touches[0].clientY;
-}
 
-function handleTouchMove(event) {
-    const currentX = event.touches[0].clientX;
-    const currentY = event.touches[0].clientY;
-
-    const deltaX = currentX - startX;
-    const deltaY = currentY - startY;
-
-    if (Math.abs(deltaX) > flickThreshold && Math.abs(deltaY) < 30) {
-        // フリックされたと判断
+    // 長押しを開始するまでの時間を設定
+    longPressTimer = setTimeout(() => {
         const clicked = event.target;
         if (clicked.tagName === "LI") {
             deleteTask(clicked);
         }
+    }, 500); // 500ミリ秒（0.5秒）で長押しとみなす時間
+}
 
-        // フリックの終了後、初期値をリセット
-        startX = 0;
-        startY = 0;
-    }
+function handleTouchEnd() {
+    // 長押しのタイマーをクリア
+    clearTimeout(longPressTimer);
+
+    // フリックの終了後、初期値をリセット
+    startX = 0;
+    startY = 0;
 }
 
 function deleteTask(taskElement) {
