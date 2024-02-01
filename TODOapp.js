@@ -75,7 +75,7 @@ function saveData() {
     lists.forEach(list => {
         //オブジェクト
         let todo = {
-            text: list.innerText,
+            text: list.textContent.replace("削除", ""),
             completed: list.classList.contains
                 ("text-decoration-line-through")
         };
